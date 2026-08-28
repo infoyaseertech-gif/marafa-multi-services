@@ -1,14 +1,9 @@
-requireAuth();
-renderShell("projects");
-
-let projects = getLS(LS.projects, []);
+let projects = [];
 let searchTerm = "";
 let statusFilter = "All";
 
-function saveProjects() { setLS(LS.projects, projects); }
-
 function projectFormHtml(p) {
-  p = p || { name: "", client: "", category: SERVICE_CATEGORIES[0], status: "Planned", start: "", end: "", value: "", notes: "" };
+  p = p || { name: "", client: "", category: SERVICE_CATEGORIES[0], status: "Planned", start_date: "", end_date: "", value: "", notes: "" };
   return `
     <form id="projectForm">
       <div class="form-field"><label>Project / Contract Name</label><input id="f_name" required value="${esc(p.name)}"></div>
@@ -18,8 +13,8 @@ function projectFormHtml(p) {
       </div>
       <div class="form-row-3">
         <div class="form-field"><label>Status</label><select id="f_status"><option ${p.status === "Planned" ? "selected" : ""}>Planned</option><option ${p.status === "Ongoing" ? "selected" : ""}>Ongoing</option><option ${p.status === "Completed" ? "selected" : ""}>Completed</option></select></div>
-        <div class="form-field"><label>Start Date</label><input id="f_start" type="date" value="${esc(p.start)}"></div>
-        <div class="form-field"><label>End Date</label><input id="f_end" type="date" value="${esc(p.end)}"></div>
+        <div class="form-field"><label>Start Date</label><input id="f_start" type="date" value="${esc(p.start_date)}"></div>
+        <div class="form-field"><label>End Date</label><input id="f_end" type="date" value="${esc(p.end_date)}"></div>
       </div>
       <div class="form-field"><label>Contract Value (₦)</label><input id="f_value" type="number" value="${esc(p.value)}"></div>
       <div class="form-field"><label>Notes</label><textarea id="f_notes">${esc(p.notes)}</textarea></div>
@@ -30,23 +25,22 @@ function projectFormHtml(p) {
 function openProjectModal(existing) {
   const modal = openModal(existing ? "Edit Project" : "Add Project", projectFormHtml(existing), true);
   modal.querySelector("#cancelBtn").addEventListener("click", closeModal);
-  modal.querySelector("#projectForm").addEventListener("submit", (e) => {
+  modal.querySelector("#projectForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = {
       name: modal.querySelector("#f_name").value.trim(),
       client: modal.querySelector("#f_client").value.trim(),
       category: modal.querySelector("#f_category").value,
       status: modal.querySelector("#f_status").value,
-      start: modal.querySelector("#f_start").value,
-      end: modal.querySelector("#f_end").value,
-      value: modal.querySelector("#f_value").value,
+      start_date: modal.querySelector("#f_start").value || null,
+      end_date: modal.querySelector("#f_end").value || null,
+      value: modal.querySelector("#f_value").value || null,
       notes: modal.querySelector("#f_notes").value.trim(),
     };
-    if (existing) { projects = projects.map((p) => (p.id === existing.id ? { ...p, ...data } : p)); }
-    else { projects.push({ id: uid(), ...data }); }
-    saveProjects();
+    if (existing) await updateProject(existing.id, data);
+    else await addProject(data);
     closeModal();
-    render();
+    load();
   });
 }
 
@@ -62,7 +56,7 @@ function render() {
             <td class="cell-strong">${esc(p.name)}${p.notes ? `<div class="cell-sub">${esc(p.notes.slice(0, 60))}${p.notes.length > 60 ? "…" : ""}</div>` : ""}</td>
             <td>${esc(p.client) || "—"}</td>
             <td class="cell-sub" style="max-width:160px;">${esc(p.category)}</td>
-            <td class="cell-sub">${esc(p.start) || "—"} → ${esc(p.end) || "—"}</td>
+            <td class="cell-sub">${esc(p.start_date) || "—"} → ${esc(p.end_date) || "—"}</td>
             <td class="cell-strong">${p.value ? fmtNaira(p.value) : "—"}</td>
             <td><span class="badge ${badgeClass(p.status)}">${esc(p.status)}</span></td>
             <td><div class="row-actions">
@@ -92,10 +86,17 @@ function render() {
   document.getElementById("addBtn").addEventListener("click", () => openProjectModal(null));
   document.querySelectorAll("[data-status]").forEach((btn) => btn.addEventListener("click", () => { statusFilter = btn.dataset.status; render(); }));
   document.querySelectorAll("[data-edit]").forEach((btn) => btn.addEventListener("click", () => openProjectModal(projects.find((p) => p.id == btn.dataset.edit))));
-  document.querySelectorAll("[data-del]").forEach((btn) => btn.addEventListener("click", () => {
+  document.querySelectorAll("[data-del]").forEach((btn) => btn.addEventListener("click", async () => {
     const proj = projects.find((p) => p.id == btn.dataset.del);
-    if (confirm(`Delete project "${proj.name}"?`)) { projects = projects.filter((p) => p.id != btn.dataset.del); saveProjects(); render(); }
+    if (confirm(`Delete project "${proj.name}"?`)) { await deleteProject(proj.id); load(); }
   }));
 }
 
-render();
+async function load() { projects = await getProjects(); render(); }
+
+(async function init() {
+  const { profile } = await requireAuth();
+  const company = await getCompany();
+  renderShell("projects", company, profile.full_name || profile.email);
+  await load();
+})();

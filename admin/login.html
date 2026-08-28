@@ -6,30 +6,31 @@
 <title>Staff Login &mdash; Marafa Multi-Services Limited</title>
 <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/admin.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="login-wrap">
   <div class="login-card">
     <div class="login-brand">
       <div class="login-badge" style="font-family:'Arvo',serif;">M</div>
-      <div class="co-name" id="companyNameLabel">MARAFA MULTI-SERVICES LIMITED</div>
+      <div class="co-name">MARAFA MULTI-SERVICES LIMITED</div>
       <div class="co-sub">OPERATIONS PORTAL</div>
     </div>
     <div class="login-box">
       <form id="loginForm">
         <div class="form-field">
-          <label for="username">Username</label>
-          <input id="username" type="text" placeholder="admin" autofocus>
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="you@marafamultiservices.com" autofocus>
         </div>
         <div class="form-field">
           <label for="password">Password</label>
           <input id="password" type="password" placeholder="••••••••">
         </div>
         <div class="login-error" id="loginError"></div>
-        <button type="submit" class="btn-brass">Sign In</button>
+        <button type="submit" class="btn-brass" id="submitBtn">Sign In</button>
         <div class="login-note">
           <span>&#128274;</span>
-          <span>Default access: <b>admin / marafa2026</b> &mdash; change this under Settings after logging in. Data is saved in this browser's storage; this is a basic access gate, not enterprise-grade security.</span>
+          <span>Data is stored securely online via Supabase. Don't have a login yet? Ask a Director to add you under <b>Manage Access</b>.</span>
         </div>
       </form>
     </div>
@@ -37,7 +38,7 @@
   </div>
 </div>
 
-<script src="js/shared.js"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/login.js"></script>
 </body>
 </html>

@@ -1,10 +1,5 @@
-requireAuth();
-renderShell("staff");
-
-let staff = getLS(LS.staff, DEFAULT_STAFF);
+let staff = [];
 let searchTerm = "";
-
-function saveStaff() { setLS(LS.staff, staff); }
 
 function staffFormHtml(s) {
   s = s || { name: "", role: "", department: DEPARTMENTS[0], phone: "", email: "", joined: "", status: "Active" };
@@ -30,7 +25,7 @@ function staffFormHtml(s) {
 function openStaffModal(existing) {
   const modal = openModal(existing ? "Edit Staff Member" : "Add Staff Member", staffFormHtml(existing));
   modal.querySelector("#cancelBtn").addEventListener("click", closeModal);
-  modal.querySelector("#staffForm").addEventListener("submit", (e) => {
+  modal.querySelector("#staffForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = {
       name: modal.querySelector("#f_name").value.trim(),
@@ -38,17 +33,13 @@ function openStaffModal(existing) {
       department: modal.querySelector("#f_department").value,
       phone: modal.querySelector("#f_phone").value.trim(),
       email: modal.querySelector("#f_email").value.trim(),
-      joined: modal.querySelector("#f_joined").value,
+      joined: modal.querySelector("#f_joined").value || null,
       status: modal.querySelector("#f_status").value,
     };
-    if (existing) {
-      staff = staff.map((s) => (s.id === existing.id ? { ...s, ...data } : s));
-    } else {
-      staff.push({ id: uid(), ...data });
-    }
-    saveStaff();
+    if (existing) await updateStaff(existing.id, data);
+    else await addStaff(data);
     closeModal();
-    render();
+    load();
   });
 }
 
@@ -62,7 +53,7 @@ function render() {
             <td>${esc(s.role)}</td>
             <td>${esc(s.department)}</td>
             <td>${esc(s.phone)}<br><span class="cell-sub">${esc(s.email)}</span></td>
-            <td>${esc(s.joined)}</td>
+            <td>${esc(s.joined) || "—"}</td>
             <td><span class="badge ${badgeClass(s.status)}">${esc(s.status)}</span></td>
             <td><div class="row-actions">
               <button class="icon-btn" data-edit="${s.id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
@@ -81,16 +72,24 @@ function render() {
         <button class="btn-add" id="addBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add Staff</button>
       </div>
     </div>
+    <p style="font-size:12.5px;color:#94a3b8;margin:-10px 0 16px;">These are HR records only. To create a staff member's login for this portal, use <a href="access.html" style="color:#b5622d;font-weight:600;">Manage Access</a>.</p>
     <div class="table-card">${rows}</div>
   `;
   document.getElementById("searchBox").addEventListener("input", (e) => { searchTerm = e.target.value; render(); });
   document.getElementById("exportBtn").addEventListener("click", () => exportCSV("marafa_staff.csv", staff));
   document.getElementById("addBtn").addEventListener("click", () => openStaffModal(null));
   document.querySelectorAll("[data-edit]").forEach((btn) => btn.addEventListener("click", () => openStaffModal(staff.find((s) => s.id == btn.dataset.edit))));
-  document.querySelectorAll("[data-del]").forEach((btn) => btn.addEventListener("click", () => {
+  document.querySelectorAll("[data-del]").forEach((btn) => btn.addEventListener("click", async () => {
     const person = staff.find((s) => s.id == btn.dataset.del);
-    if (confirm(`Remove ${person.name}?`)) { staff = staff.filter((s) => s.id != btn.dataset.del); saveStaff(); render(); }
+    if (confirm(`Remove ${person.name}?`)) { await deleteStaff(person.id); load(); }
   }));
 }
 
-render();
+async function load() { staff = await getStaff(); render(); }
+
+(async function init() {
+  const { profile } = await requireAuth();
+  const company = await getCompany();
+  renderShell("staff", company, profile.full_name || profile.email);
+  await load();
+})();
