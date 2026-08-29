@@ -28,12 +28,15 @@ create table if not exists public.profiles (
 );
 alter table public.profiles enable row level security;
 
+drop policy if exists "profiles_select_authenticated" on public.profiles;
 create policy "profiles_select_authenticated" on public.profiles
   for select using (auth.role() = 'authenticated');
+drop policy if exists "profiles_insert_authenticated" on public.profiles;
 create policy "profiles_insert_authenticated" on public.profiles
   for insert with check (auth.role() = 'authenticated');
   -- (any logged-in staff member can provision a profile row for a new
   --  teammate — this is what lets Directors add staff logins in-app)
+drop policy if exists "profiles_update_authenticated" on public.profiles;
 create policy "profiles_update_authenticated" on public.profiles
   for update using (auth.role() = 'authenticated');
 
@@ -63,6 +66,7 @@ create table if not exists public.staff (
   created_at timestamptz default now()
 );
 alter table public.staff enable row level security;
+drop policy if exists "staff_all_access" on public.staff;
 create policy "staff_all_access" on public.staff
   for all using (public.is_active_staff()) with check (public.is_active_staff());
 
@@ -87,6 +91,7 @@ create table if not exists public.projects (
   created_at timestamptz default now()
 );
 alter table public.projects enable row level security;
+drop policy if exists "projects_all_access" on public.projects;
 create policy "projects_all_access" on public.projects
   for all using (public.is_active_staff()) with check (public.is_active_staff());
 
@@ -107,6 +112,7 @@ create table if not exists public.sales (
   created_at timestamptz default now()
 );
 alter table public.sales enable row level security;
+drop policy if exists "sales_all_access" on public.sales;
 create policy "sales_all_access" on public.sales
   for all using (public.is_active_staff()) with check (public.is_active_staff());
 
@@ -123,6 +129,7 @@ create table if not exists public.expenses (
   created_at timestamptz default now()
 );
 alter table public.expenses enable row level security;
+drop policy if exists "expenses_all_access" on public.expenses;
 create policy "expenses_all_access" on public.expenses
   for all using (public.is_active_staff()) with check (public.is_active_staff());
 
@@ -139,6 +146,7 @@ create table if not exists public.company_settings (
   constraint single_row check (id = 1)
 );
 alter table public.company_settings enable row level security;
+drop policy if exists "company_settings_all_access" on public.company_settings;
 create policy "company_settings_all_access" on public.company_settings
   for all using (public.is_active_staff()) with check (public.is_active_staff());
 
