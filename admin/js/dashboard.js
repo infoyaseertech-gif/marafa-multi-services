@@ -33,8 +33,8 @@ function computeAndRenderDashboard() {
     new Chart(document.getElementById("barChart"), {
       type: "bar",
       data: { labels: months, datasets: [
-        { label: "Sales", data: months.map((m) => monthMap[m].sales), backgroundColor: "#10b981", borderRadius: 4 },
-        { label: "Expenses", data: months.map((m) => monthMap[m].expenses), backgroundColor: "#b5622d", borderRadius: 4 },
+        { label: "Sales", data: months.map((m) => monthMap[m].sales), backgroundColor: "#2f8f3b", borderRadius: 4 },
+        { label: "Expenses", data: months.map((m) => monthMap[m].expenses), backgroundColor: "#1c5c94", borderRadius: 4 },
       ] },
       options: { responsive: true, plugins: { legend: { position: "bottom", labels: { font: { size: 11 } } } }, scales: { y: { ticks: { callback: (v) => "₦" + v / 1000 + "k" } } } },
     });
@@ -47,7 +47,7 @@ function computeAndRenderDashboard() {
   if (statusLabels.length) {
     new Chart(document.getElementById("pieChart"), {
       type: "doughnut",
-      data: { labels: statusLabels, datasets: [{ data: statusLabels.map((k) => statusCounts[k]), backgroundColor: ["#94a3b8", "#c9962c", "#10b981"] }] },
+      data: { labels: statusLabels, datasets: [{ data: statusLabels.map((k) => statusCounts[k]), backgroundColor: ["#94a3b8", "#1c5c94", "#2f8f3b"] }] },
       options: { responsive: true, plugins: { legend: { position: "bottom", labels: { font: { size: 11 } } } } },
     });
   } else {

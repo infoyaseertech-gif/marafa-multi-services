@@ -72,7 +72,7 @@ function render() {
         <button class="btn-add" id="addBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add Staff</button>
       </div>
     </div>
-    <p style="font-size:12.5px;color:#94a3b8;margin:-10px 0 16px;">These are HR records only. To create a staff member's login for this portal, use <a href="access.html" style="color:#b5622d;font-weight:600;">Manage Access</a>.</p>
+    <p style="font-size:12.5px;color:#94a3b8;margin:-10px 0 16px;">These are HR records only. To create a staff member's login for this portal, use <a href="access.html" style="color:#1c5c94;font-weight:600;">Manage Access</a>.</p>
     <div class="table-card">${rows}</div>
   `;
   document.getElementById("searchBox").addEventListener("input", (e) => { searchTerm = e.target.value; render(); });

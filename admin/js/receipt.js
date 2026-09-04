@@ -11,12 +11,14 @@ function receiptNo(sale) {
 function receiptCardHtml(sale, company, issuedBy) {
   const isPaid = sale.status === "Paid";
   return `
-    <div id="receiptCard" style="width:420px;background:#fff;font-family:'Work Sans',sans-serif;color:#191712;padding:0;position:relative;overflow:hidden;border:1px solid #e7e0cf;">
-      <div style="background:#101c33;padding:22px 26px;color:#fff;display:flex;align-items:center;gap:12px;">
-        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(155deg,#e4b95c,#c9962c 60%,#b5622d);display:flex;align-items:center;justify-content:center;font-family:'Arvo',serif;font-weight:700;color:#101c33;font-size:16px;flex-shrink:0;">M</div>
+    <div id="receiptCard" style="width:420px;background:#fff;font-family:'Work Sans',sans-serif;color:#141a17;padding:0;position:relative;overflow:hidden;border:1px solid #e2ece8;">
+      <div style="background:#0f2a4a;padding:22px 26px;color:#fff;display:flex;align-items:center;gap:12px;">
+        <div style="width:38px;height:38px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:4px;">
+          <img src="../assets/logo.png" alt="logo" style="width:100%;height:100%;object-fit:contain;display:block;">
+        </div>
         <div>
           <div style="font-family:'Arvo',serif;font-weight:700;font-size:14px;">${esc(company.name)}</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#e4b95c;margin-top:2px;">RC ${esc(company.rc)}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#63c060;margin-top:2px;">RC ${esc(company.rc)}</div>
         </div>
       </div>
       <div style="padding:24px 26px;">
@@ -30,7 +32,7 @@ function receiptCardHtml(sale, company, issuedBy) {
             <div style="font-weight:600;font-size:13px;">${esc(sale.sale_date || sale.date || "—")}</div>
           </div>
         </div>
-        <div style="border-top:1px dashed #d8cfb6;border-bottom:1px dashed #d8cfb6;padding:16px 0;margin-bottom:16px;">
+        <div style="border-top:1px dashed #d6e3df;border-bottom:1px dashed #d6e3df;padding:16px 0;margin-bottom:16px;">
           <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;">Received From / Client</div>
           <div style="font-weight:700;font-size:15px;margin-bottom:14px;">${esc(sale.client) || "—"}</div>
           <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;">For</div>
@@ -38,7 +40,7 @@ function receiptCardHtml(sale, company, issuedBy) {
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
           <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;color:#64748b;text-transform:uppercase;">Amount</div>
-          <div style="font-weight:700;font-size:22px;color:#101c33;">${fmtNaira(sale.amount)}</div>
+          <div style="font-weight:700;font-size:22px;color:#0f2a4a;">${fmtNaira(sale.amount)}</div>
         </div>
         ${issuedBy ? `<div style="font-size:11.5px;color:#94a3b8;margin-top:10px;">Issued by: ${esc(issuedBy)}</div>` : ""}
         <div style="margin-top:18px;text-align:center;">
@@ -47,7 +49,7 @@ function receiptCardHtml(sale, company, issuedBy) {
           </span>
         </div>
       </div>
-      <div style="background:#f4efe4;padding:12px 26px;text-align:center;font-size:11px;color:#544f45;">
+      <div style="background:#eef4f1;padding:12px 26px;text-align:center;font-size:11px;color:#4c554f;">
         ${esc(company.address)}<br>${esc(company.phone)} &middot; ${esc(company.email)}
       </div>
     </div>`;

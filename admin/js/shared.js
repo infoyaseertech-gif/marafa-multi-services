@@ -27,7 +27,7 @@ function configIsMissing() {
 }
 function showConfigError() {
   document.body.innerHTML = `
-    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#101c33;padding:24px;font-family:sans-serif;">
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f2a4a;padding:24px;font-family:sans-serif;">
       <div style="background:#fff;border-radius:16px;padding:32px;max-width:480px;">
         <h2 style="color:#e11d48;margin-top:0;">Supabase not connected yet</h2>
         <p style="color:#334155;font-size:14.5px;line-height:1.6;">
@@ -209,12 +209,12 @@ function renderShell(activeId, company, userLabel) {
     <div class="scrim" id="scrim"></div>
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-head">
-        <div class="sidebar-badge">M</div>
+        <div class="sidebar-badge"><img src="../assets/logo.png" alt="logo"></div>
         <div><div class="co-name">${esc(company.name)}</div><div class="co-rc">RC ${esc(company.rc)}</div></div>
       </div>
       <nav class="sidebar-nav">${navHtml}</nav>
       <div class="sidebar-foot">
-        ${userLabel ? `<div style="font-size:11.5px;color:#94a3b8;padding:0 4px 10px;">Signed in as<br><b style="color:#e4b95c;">${esc(userLabel)}</b></div>` : ""}
+        ${userLabel ? `<div style="font-size:11.5px;color:#94a3b8;padding:0 4px 10px;">Signed in as<br><b style="color:#63c060;">${esc(userLabel)}</b></div>` : ""}
         <button class="logout-btn" id="logoutBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg> Log Out</button>
       </div>
     </aside>

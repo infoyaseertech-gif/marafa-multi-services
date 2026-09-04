@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -15,7 +16,7 @@
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <pattern id="zanko" width="60" height="40" patternUnits="userSpaceOnUse">
-      <path d="M0,40 L0,30 L8,30 L8,22 L14,22 L14,12 L20,12 L20,4 L26,4 L26,12 L32,12 L32,22 L38,22 L38,30 L46,30 L46,40 Z" fill="currentColor"/>
+      <path d="M0,40 L0,30 L8,30 L8,22 L14,22 L14,12 L20,12 L20,4 L26,4 L26,12 L32,12 L32,22 L38,22 L38,30 L46,30 L46,40 Z" fill="#2f8f3b"/>
     </pattern>
   </defs>
 </svg>
@@ -23,7 +24,7 @@
 <header id="siteHeader">
   <nav class="wrap">
     <a href="index.html" class="brand">
-      <span class="brand-badge">M</span>
+      <span class="brand-badge"><img src="assets/logo.png" alt="Marafa Multi-Services logo"></span>
       <span class="brand-text">
         <span class="name">MARAFA MULTI-SERVICES</span>
         <span class="sub">LIMITED &middot; RC 9797637</span>
@@ -32,10 +33,10 @@
     <ul class="navlinks">
       <li><a href="about.html">About</a></li>
       <li><a href="services.html">Services</a></li>
+      <li><a href="careers.html">Careers</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="admin/login.html">Staff Login</a></li>
     </ul>
-    <a href="contact.html" class="nav-cta">REQUEST A QUOTE</a>
+    <a href="admin/login.html" class="nav-cta">STAFF LOGIN</a>
     <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
       <span></span><span></span><span></span>
     </button>
@@ -46,6 +47,7 @@
 <div class="mobile-nav" id="mobileNav">
   <a href="about.html">About</a>
   <a href="services.html">Services</a>
+  <a href="careers.html">Careers</a>
   <a href="contact.html">Contact</a>
   <a href="admin/login.html">Staff Login</a>
 </div>
@@ -72,7 +74,7 @@
       </div>
     </div>
   </div>
-  <div class="zanko-divider" style="color:var(--brass); height:40px;">
+  <div class="zanko-divider" style="height:40px;">
     <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" height="40"><rect width="1200" height="40" fill="url(#zanko)"/></svg>
   </div>
 </section>
@@ -164,7 +166,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="index.html" class="brand">
-          <span class="brand-badge">M</span>
+          <span class="brand-badge"><img src="assets/logo.png" alt="Marafa Multi-Services logo"></span>
           <span class="brand-text"><span class="name">MARAFA MULTI-SERVICES</span><span class="sub" style="color:var(--brass-light);">LIMITED &middot; RC 9797637</span></span>
         </a>
         <p class="footer-desc">Trade, contracting, construction, logistics, agriculture and consultancy &mdash; one accountable partner based in Kaduna State, Nigeria.</p>
@@ -172,7 +174,7 @@
       <div class="footer-col">
         <h5>QUICK LINKS</h5>
         <a href="about.html">About the Company</a>
-        <a href="services.html">Our Services</a>
+        <a href="services.html">Our Services</a><a href="careers.html">Careers</a>
         <a href="contact.html">Contact Us</a>
         <a href="admin/login.html">Staff Login</a>
       </div>

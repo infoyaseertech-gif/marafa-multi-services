@@ -14,9 +14,9 @@
     <h1 class="page-title">Reports &amp; Summary</h1>
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-label">Total Revenue</div><div class="kpi-value" style="color:#047857">${fmtNaira(totalSales)}</div></div>
-      <div class="kpi-card"><div class="kpi-label">Total Expenses</div><div class="kpi-value" style="color:#b5622d">${fmtNaira(totalExpenses)}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Total Expenses</div><div class="kpi-value" style="color:#1c5c94">${fmtNaira(totalExpenses)}</div></div>
       <div class="kpi-card"><div class="kpi-label">Net Profit / Loss</div><div class="kpi-value" style="color:${net >= 0 ? "#047857" : "#e11d48"}">${fmtNaira(net)}</div></div>
-      <div class="kpi-card"><div class="kpi-label">Unpaid Receivables</div><div class="kpi-value" style="color:#c9962c">${fmtNaira(pending)}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Unpaid Receivables</div><div class="kpi-value" style="color:#2f8f3b">${fmtNaira(pending)}</div></div>
     </div>
     <div class="chart-grid" style="grid-template-columns:1fr 1fr;">
       <div class="chart-card"><h3>Expenses by Category</h3><div id="pieWrap"><canvas id="pieChart" height="180"></canvas></div></div>
@@ -42,7 +42,7 @@
   if (catLabels.length) {
     new Chart(document.getElementById("pieChart"), {
       type: "pie",
-      data: { labels: catLabels, datasets: [{ data: catLabels.map((c) => catMap[c]), backgroundColor: ["#101c33", "#c9962c", "#b5622d", "#10b981", "#64748b", "#e11d48", "#0ea5e9", "#a855f7", "#f59e0b"] }] },
+      data: { labels: catLabels, datasets: [{ data: catLabels.map((c) => catMap[c]), backgroundColor: ["#0f2a4a", "#2f8f3b", "#1c5c94", "#10b981", "#64748b", "#e11d48", "#0ea5e9", "#a855f7", "#f59e0b"] }] },
       options: { responsive: true, plugins: { legend: { position: "bottom", labels: { font: { size: 10 } } } } },
     });
   } else {
@@ -55,7 +55,7 @@
   if (svcLabels.length) {
     new Chart(document.getElementById("barChart"), {
       type: "bar",
-      data: { labels: svcLabels, datasets: [{ data: svcLabels.map((c) => svcMap[c]), backgroundColor: "#101c33", borderRadius: 4 }] },
+      data: { labels: svcLabels, datasets: [{ data: svcLabels.map((c) => svcMap[c]), backgroundColor: "#0f2a4a", borderRadius: 4 }] },
       options: { indexAxis: "y", responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { precision: 0 } }, y: { ticks: { font: { size: 10 } } } } },
     });
   } else {
