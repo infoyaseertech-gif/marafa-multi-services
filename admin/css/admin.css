@@ -8,7 +8,7 @@
   --bg:#f5f7f6;
 }
 *{box-sizing:border-box;}
-body{margin:0;font-family:'Work Sans',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:#141a17;}
+body{margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:#141a17;}
 a{text-decoration:none;color:inherit;}
 button{font-family:inherit;cursor:pointer;}
 input,select,textarea{font-family:inherit;}

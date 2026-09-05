@@ -8,49 +8,107 @@ function receiptNo(sale) {
   return sale.receipt_no || ("RCT-" + String(sale.id).padStart(5, "0"));
 }
 
+/* ---- Number to words (Naira) — gives the receipt a formal, bank-style finish ---- */
+function numberToWords(num) {
+  num = Math.round(Number(num) || 0);
+  if (num === 0) return "Zero Naira Only";
+  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+    "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+  function chunk(n) {
+    let s = "";
+    if (n >= 100) { s += ones[Math.floor(n / 100)] + " Hundred"; n %= 100; if (n) s += " and "; }
+    if (n >= 20) { s += tens[Math.floor(n / 10)]; if (n % 10) s += "-" + ones[n % 10]; }
+    else if (n > 0) { s += ones[n]; }
+    return s;
+  }
+
+  const scales = [
+    [1000000000, "Billion"], [1000000, "Million"], [1000, "Thousand"], [1, ""],
+  ];
+  let words = "";
+  let n = num;
+  for (const [value, label] of scales) {
+    if (n >= value) {
+      const count = Math.floor(n / value);
+      words += (words ? ", " : "") + chunk(count) + (label ? " " + label : "");
+      n %= value;
+    }
+  }
+  return (words || "Zero") + " Naira Only";
+}
+
 function receiptCardHtml(sale, company, issuedBy) {
   const isPaid = sale.status === "Paid";
+  const statusColor = isPaid ? "#1f6d33" : "#b45309";
+  const statusBg = isPaid ? "#e7f4ea" : "#fdf3e2";
   return `
-    <div id="receiptCard" style="width:420px;background:#fff;font-family:'Work Sans',sans-serif;color:#141a17;padding:0;position:relative;overflow:hidden;border:1px solid #e2ece8;">
-      <div style="background:#0f2a4a;padding:22px 26px;color:#fff;display:flex;align-items:center;gap:12px;">
-        <div style="width:38px;height:38px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:4px;">
-          <img src="../assets/logo.png" alt="logo" style="width:100%;height:100%;object-fit:contain;display:block;">
-        </div>
-        <div>
-          <div style="font-family:'Arvo',serif;font-weight:700;font-size:14px;">${esc(company.name)}</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#63c060;margin-top:2px;">RC ${esc(company.rc)}</div>
-        </div>
-      </div>
-      <div style="padding:24px 26px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;">
+    <div id="receiptCard" style="width:560px;background:#fff;font-family:'Inter',-apple-system,sans-serif;color:#1a2430;padding:40px 44px;border:1px solid #e4e8eb;box-sizing:border-box;">
+
+      <!-- Header: logo + company block, RECEIPT label + no/date -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:22px;border-bottom:2px solid #0f2a4a;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <img src="../assets/logo.png" alt="logo" style="width:46px;height:46px;object-fit:contain;flex-shrink:0;">
           <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:#94a3b8;text-transform:uppercase;">Receipt No.</div>
-            <div style="font-weight:700;font-size:14px;">${esc(receiptNo(sale))}</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:#94a3b8;text-transform:uppercase;">Date</div>
-            <div style="font-weight:600;font-size:13px;">${esc(sale.sale_date || sale.date || "—")}</div>
+            <div style="font-weight:700;font-size:16px;color:#0f2a4a;letter-spacing:-0.01em;">${esc(company.name)}</div>
+            <div style="font-size:11px;color:#5b6570;margin-top:4px;max-width:230px;line-height:1.5;">${esc(company.address)}</div>
+            <div style="font-size:11px;color:#5b6570;margin-top:2px;">${esc(company.phone)} &middot; ${esc(company.email)}</div>
           </div>
         </div>
-        <div style="border-top:1px dashed #d6e3df;border-bottom:1px dashed #d6e3df;padding:16px 0;margin-bottom:16px;">
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;">Received From / Client</div>
-          <div style="font-weight:700;font-size:15px;margin-bottom:14px;">${esc(sale.client) || "—"}</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;">For</div>
-          <div style="font-size:13.5px;">${esc(sale.description)}</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;color:#64748b;text-transform:uppercase;">Amount</div>
-          <div style="font-weight:700;font-size:22px;color:#0f2a4a;">${fmtNaira(sale.amount)}</div>
-        </div>
-        ${issuedBy ? `<div style="font-size:11.5px;color:#94a3b8;margin-top:10px;">Issued by: ${esc(issuedBy)}</div>` : ""}
-        <div style="margin-top:18px;text-align:center;">
-          <span style="display:inline-block;padding:8px 22px;border-radius:99px;font-weight:700;font-size:13px;letter-spacing:.06em;background:${isPaid ? "#d1fae5" : "#fef3c7"};color:${isPaid ? "#047857" : "#b45309"};border:2px solid ${isPaid ? "#047857" : "#b45309"};">
-            ${isPaid ? "PAID" : "UNPAID"}
-          </span>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:19px;font-weight:800;color:#0f2a4a;letter-spacing:.05em;">RECEIPT</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5b6570;margin-top:8px;">No. ${esc(receiptNo(sale))}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5b6570;margin-top:2px;">Date: ${esc(sale.sale_date || sale.date || "—")}</div>
+          <div style="margin-top:8px;">
+            <span style="display:inline-block;padding:4px 12px;border-radius:99px;font-weight:700;font-size:11px;letter-spacing:.05em;background:${statusBg};color:${statusColor};">${isPaid ? "PAID" : "UNPAID"}</span>
+          </div>
         </div>
       </div>
-      <div style="background:#eef4f1;padding:12px 26px;text-align:center;font-size:11px;color:#4c554f;">
-        ${esc(company.address)}<br>${esc(company.phone)} &middot; ${esc(company.email)}
+
+      <!-- Received from -->
+      <div style="margin-top:22px;">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#94a0aa;margin-bottom:5px;">Received From</div>
+        <div style="font-size:15px;font-weight:600;color:#1a2430;">${esc(sale.client) || "—"}</div>
+      </div>
+
+      <!-- Item table -->
+      <table style="width:100%;border-collapse:collapse;margin-top:24px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:0 0 8px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#94a0aa;border-bottom:1px solid #e4e8eb;font-weight:600;">Description</th>
+            <th style="text-align:right;padding:0 0 8px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#94a0aa;border-bottom:1px solid #e4e8eb;font-weight:600;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:16px 0;font-size:14px;color:#1a2430;border-bottom:1px solid #f0f2f3;vertical-align:top;">${esc(sale.description)}</td>
+            <td style="padding:16px 0;font-size:14px;color:#1a2430;text-align:right;border-bottom:1px solid #f0f2f3;white-space:nowrap;">${fmtNaira(sale.amount)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Total -->
+      <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+        <div style="width:230px;display:flex;justify-content:space-between;padding:12px 0 6px;font-size:16px;font-weight:800;color:#0f2a4a;border-top:2px solid #0f2a4a;">
+          <span>TOTAL</span><span>${fmtNaira(sale.amount)}</span>
+        </div>
+      </div>
+
+      <!-- Amount in words -->
+      <div style="margin-top:10px;font-size:11.5px;color:#5b6570;font-style:italic;">
+        Amount in words: ${esc(numberToWords(sale.amount))}
+      </div>
+
+      <!-- Signature block -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:52px;">
+        <div style="width:180px;border-top:1px solid #c7cdd3;padding-top:6px;font-size:10.5px;color:#94a0aa;">Authorized Signature</div>
+        <div style="text-align:right;font-size:11px;color:#5b6570;">${issuedBy ? "Issued by: " + esc(issuedBy) : ""}</div>
+      </div>
+
+      <!-- Footer -->
+      <div style="margin-top:28px;padding-top:16px;border-top:1px solid #e4e8eb;text-align:center;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:#94a0aa;">RC ${esc(company.rc)} &middot; THANK YOU FOR YOUR BUSINESS</div>
       </div>
     </div>`;
 }
