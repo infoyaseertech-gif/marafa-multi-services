@@ -24,7 +24,7 @@ body{
   margin:0;
   font-family:var(--font-body);
   color:var(--ink);
-  background:var(--paper);
+  background:var(--indigo-900);
   line-height:1.65;
   -webkit-font-smoothing:antialiased;
 }
@@ -91,6 +91,7 @@ nav.wrap{display:flex;align-items:center;justify-content:space-between;}
   color:#fff;
   padding:150px 0 96px 0;
   overflow:hidden;
+  margin-bottom:-1px;
 }
 .hero-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:56px;align-items:center;}
 .hero .eyebrow{color:var(--brass-light);margin-bottom:18px;}
@@ -103,6 +104,7 @@ nav.wrap{display:flex;align-items:center;justify-content:space-between;}
   position:relative;
   background:linear-gradient(160deg, var(--indigo-900) 0%, var(--indigo-850) 60%, var(--indigo-800) 100%);
   color:#fff;padding:140px 0 64px;
+  margin-bottom:-1px;
 }
 .page-header .eyebrow{color:var(--brass-light);margin-bottom:14px;}
 .page-header h1{font-size:clamp(28px,3.6vw,40px);color:#fff;max-width:16em;}
