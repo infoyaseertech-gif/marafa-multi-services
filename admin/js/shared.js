@@ -45,8 +45,13 @@ async function requireAuth() {
   if (configIsMissing()) { showConfigError(); throw new Error("stop"); }
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = "login.html"; throw new Error("stop"); }
-  const { data: profile } = await sb.from("profiles").select("is_active,full_name,email").eq("id", session.user.id).single();
-  if (!profile || profile.is_active === false) {
+  const { data: profile, error: profileError } = await sb.from("profiles").select("is_active,full_name,email").eq("id", session.user.id).single();
+  if (profileError || !profile) {
+    await sb.auth.signOut();
+    window.location.href = "login.html?noprofile=1";
+    throw new Error("stop");
+  }
+  if (profile.is_active === false) {
     await sb.auth.signOut();
     window.location.href = "login.html?deactivated=1";
     throw new Error("stop");

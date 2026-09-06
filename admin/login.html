@@ -29,10 +29,18 @@
         </div>
         <div class="login-error" id="loginError"></div>
         <button type="submit" class="btn-brass" id="submitBtn">Sign In</button>
-        <div class="login-note">
-          <span>&#128274;</span>
-          <span>Data is stored securely online via Supabase. Don't have a login yet? Ask a Director to add you under <b>Manage Access</b>.</span>
+        <p style="text-align:center;margin-top:16px;"><a href="#" id="forgotLink" style="color:#5b6570;font-size:13px;">Forgot your password?</a></p>
+      </form>
+      <form id="resetForm" style="display:none;">
+        <p style="font-size:13px;color:#5b6570;margin-top:0;">Enter your email and we'll send you a link to reset your password.</p>
+        <div class="form-field">
+          <label for="resetEmail">Email</label>
+          <input id="resetEmail" type="email" placeholder="you@marafamultiservices.com">
         </div>
+        <div class="login-error" id="resetError"></div>
+        <div class="login-note" id="resetSuccess" style="display:none;color:#1f6d33;"><span>&#9993;</span><span>Check your inbox for a password reset link.</span></div>
+        <button type="submit" class="btn-brass" id="resetBtn">Send Reset Link</button>
+        <p style="text-align:center;margin-top:16px;"><a href="#" id="backToLoginLink" style="color:#5b6570;font-size:13px;">&larr; Back to Sign In</a></p>
       </form>
     </div>
     <p style="text-align:center;margin-top:18px;"><a href="../index.html" style="color:#c9d4e8;font-size:13px;">&larr; Back to company website</a></p>
