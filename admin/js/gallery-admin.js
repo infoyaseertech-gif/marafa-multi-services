@@ -1,5 +1,10 @@
 let galleryItems = [];
 
+const MAX_IMAGE_MB = 8;
+const MAX_VIDEO_MB = 50;
+
+function fileSizeMB(file) { return file.size / (1024 * 1024); }
+
 function galleryTileHtml(item) {
   const media = item.media_type === "video"
     ? `<video src="${esc(item.url)}" muted></video>`
@@ -27,7 +32,9 @@ function render() {
       <h3>Upload Photo or Video</h3>
       <form id="uploadForm">
         <div class="form-row-2">
-          <div class="form-field"><label>File (image or video)</label><input id="f_file" type="file" accept="image/*,video/*" required></div>
+          <div class="form-field"><label>File (image or video)</label><input id="f_file" type="file" accept="image/*,video/*" required>
+            <span style="font-size:11.5px;color:#94a3b8;margin-top:4px;">Max ${MAX_IMAGE_MB}MB for photos, ${MAX_VIDEO_MB}MB for videos</span>
+          </div>
           <div class="form-field"><label>Caption (optional)</label><input id="f_caption" type="text" placeholder="e.g. Site delivery, August 2026"></div>
         </div>
         <button type="submit" class="btn-add" id="uploadBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to Gallery</button>
@@ -47,8 +54,18 @@ function render() {
     const btn = document.getElementById("uploadBtn");
     if (!file) return;
 
+    const isVideo = file.type.startsWith("video/");
+    const limitMB = isVideo ? MAX_VIDEO_MB : MAX_IMAGE_MB;
+    if (fileSizeMB(file) > limitMB) {
+      msg.style.display = "block";
+      msg.style.color = "#e11d48";
+      msg.textContent = `That ${isVideo ? "video" : "image"} is ${fileSizeMB(file).toFixed(1)}MB — the limit is ${limitMB}MB per file (your free Supabase storage plan only has 1GB total, so large files fill it up fast). Try a smaller or compressed file.`;
+      return;
+    }
+
     btn.disabled = true;
     msg.style.display = "block";
+    msg.style.color = "";
     msg.textContent = "Uploading… this may take a moment for videos.";
 
     const url = await uploadMedia(file, "gallery");

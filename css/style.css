@@ -251,6 +251,17 @@ footer{background:var(--indigo-900);color:#a9bbcb;}
   font-size:12px;color:rgba(255,255,255,.45);font-family:var(--font-mono);
 }
 
+.whatsapp-fab{
+  position:fixed;bottom:24px;right:24px;z-index:150;
+  width:56px;height:56px;border-radius:50%;
+  background:#25D366;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.28);
+  transition:transform .2s ease, box-shadow .2s ease;
+  text-decoration:none;
+}
+.whatsapp-fab:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(0,0,0,.35);}
+@media (max-width:560px){.whatsapp-fab{width:50px;height:50px;bottom:18px;right:18px;}}
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:920px){
   .navlinks,.nav-cta{display:none;}

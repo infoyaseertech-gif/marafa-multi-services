@@ -1,4 +1,7 @@
 let showcaseProjects = [];
+const MAX_IMAGE_MB = 8;
+function fileSizeMB(file) { return file.size / (1024 * 1024); }
+function oversizedFiles(files) { return files.filter((f) => fileSizeMB(f) > MAX_IMAGE_MB); }
 
 function showcaseFormHtml(p) {
   p = p || { title: "", description: "", status: "Ongoing", cover_image: "", images: [] };
@@ -16,6 +19,7 @@ function showcaseFormHtml(p) {
         <label>Cover Image ${p.cover_image ? "(leave blank to keep current)" : ""}</label>
         ${p.cover_image ? `<div class="thumb-row"><div class="thumb"><img src="${esc(p.cover_image)}"></div></div>` : ""}
         <input id="f_cover" type="file" accept="image/*" style="margin-top:8px;">
+        <span style="font-size:11.5px;color:#94a3b8;display:block;margin-top:4px;">Max ${MAX_IMAGE_MB}MB per image</span>
       </div>
       <div class="form-field">
         <label>Additional Images (optional, can select several)</label>
@@ -51,6 +55,15 @@ function openShowcaseModal(existing) {
     const status = modal.querySelector("#f_status").value;
     const coverFile = modal.querySelector("#f_cover").files[0];
     const extraFiles = Array.from(modal.querySelector("#f_images").files || []);
+
+    const tooLarge = oversizedFiles([coverFile, ...extraFiles].filter(Boolean));
+    if (tooLarge.length) {
+      msg.style.color = "#e11d48";
+      msg.textContent = `${tooLarge.length === 1 ? "One image is" : tooLarge.length + " images are"} over the ${MAX_IMAGE_MB}MB limit (your free Supabase storage plan only has 1GB total). Please use smaller images.`;
+      saveBtn.disabled = false;
+      return;
+    }
+    msg.style.color = "";
 
     let coverImage = existing ? existing.cover_image : "";
     if (coverFile) {
