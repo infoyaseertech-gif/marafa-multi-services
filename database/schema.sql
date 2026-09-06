@@ -157,6 +157,70 @@ insert into public.company_settings (id, name, rc, address, email, phone) values
 on conflict (id) do nothing;
 
 -- =====================================================================
+--  GALLERY — public-facing photo/video gallery
+--  Anyone can VIEW these on the website; only logged-in staff can add,
+--  edit, or remove them.
+-- =====================================================================
+create table if not exists public.gallery_items (
+  id bigint generated always as identity primary key,
+  media_type text default 'image',   -- 'image' or 'video'
+  url text not null,
+  caption text,
+  sort_order int default 0,
+  created_at timestamptz default now()
+);
+alter table public.gallery_items enable row level security;
+drop policy if exists "gallery_public_read" on public.gallery_items;
+create policy "gallery_public_read" on public.gallery_items for select using (true);
+drop policy if exists "gallery_staff_insert" on public.gallery_items;
+create policy "gallery_staff_insert" on public.gallery_items for insert with check (public.is_active_staff());
+drop policy if exists "gallery_staff_update" on public.gallery_items;
+create policy "gallery_staff_update" on public.gallery_items for update using (public.is_active_staff());
+drop policy if exists "gallery_staff_delete" on public.gallery_items;
+create policy "gallery_staff_delete" on public.gallery_items for delete using (public.is_active_staff());
+
+-- =====================================================================
+--  PROJECT SHOWCASE — the public portfolio shown on the website
+--  (separate from the private "projects" table above, which is your
+--  internal client/contract tracker and is never shown publicly)
+-- =====================================================================
+create table if not exists public.showcase_projects (
+  id bigint generated always as identity primary key,
+  title text not null,
+  description text,
+  status text default 'Ongoing',     -- 'Ongoing' or 'Completed'
+  cover_image text,
+  images text[] default '{}',
+  sort_order int default 0,
+  created_at timestamptz default now()
+);
+alter table public.showcase_projects enable row level security;
+drop policy if exists "showcase_public_read" on public.showcase_projects;
+create policy "showcase_public_read" on public.showcase_projects for select using (true);
+drop policy if exists "showcase_staff_insert" on public.showcase_projects;
+create policy "showcase_staff_insert" on public.showcase_projects for insert with check (public.is_active_staff());
+drop policy if exists "showcase_staff_update" on public.showcase_projects;
+create policy "showcase_staff_update" on public.showcase_projects for update using (public.is_active_staff());
+drop policy if exists "showcase_staff_delete" on public.showcase_projects;
+create policy "showcase_staff_delete" on public.showcase_projects for delete using (public.is_active_staff());
+
+-- =====================================================================
+--  STORAGE — for uploaded gallery/project images and videos
+--  MANUAL STEP FIRST: in the Supabase Dashboard, go to Storage → New
+--  bucket → name it exactly "media" → toggle "Public bucket" ON → Save.
+--  Then run the policies below.
+-- =====================================================================
+drop policy if exists "media_public_read" on storage.objects;
+create policy "media_public_read" on storage.objects
+  for select using (bucket_id = 'media');
+drop policy if exists "media_staff_upload" on storage.objects;
+create policy "media_staff_upload" on storage.objects
+  for insert with check (bucket_id = 'media' and public.is_active_staff());
+drop policy if exists "media_staff_delete" on storage.objects;
+create policy "media_staff_delete" on storage.objects
+  for delete using (bucket_id = 'media' and public.is_active_staff());
+
+-- =====================================================================
 --  AFTER creating your first Auth user(s) in the Dashboard
 --  (Authentication → Users → Add user), run this for EACH one so they
 --  show up correctly in "Manage Access" inside the app.

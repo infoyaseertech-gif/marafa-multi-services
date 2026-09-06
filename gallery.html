@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery &mdash; Marafa Multi-Services Limited</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .gallery-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
+  .gallery-item{border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:pointer;background:#f1f5f4;}
+  .gallery-item .media{width:100%;aspect-ratio:4/3;overflow:hidden;background:#eef1f0;}
+  .gallery-item img,.gallery-item video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease;}
+  .gallery-item:hover img,.gallery-item:hover video{transform:scale(1.04);}
+  .gallery-item .cap{padding:10px 12px;font-size:13px;color:var(--ink-soft);}
+  .lightbox{display:none;position:fixed;inset:0;background:rgba(10,15,20,.92);z-index:200;align-items:center;justify-content:center;padding:24px;}
+  .lightbox.open{display:flex;}
+  .lightbox img,.lightbox video{max-width:100%;max-height:85vh;border-radius:6px;}
+  .lightbox-close{position:absolute;top:24px;right:28px;background:none;border:none;color:#fff;font-size:32px;cursor:pointer;line-height:1;}
+</style>
+</head>
+<body>
+
+<header id="siteHeader" class="solid">
+  <nav class="wrap">
+    <a href="index.html" class="brand"><span class="brand-badge"><img src="assets/logo.png" alt="Marafa Multi-Services logo"></span><span class="brand-text"><span class="name">MARAFA MULTI-SERVICES</span><span class="sub">LIMITED &middot; RC 9797637</span></span></a>
+    <ul class="navlinks">
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="gallery.html" class="active">Gallery</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="admin/login.html" class="nav-cta">STAFF LOGIN</a>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+<div class="scrim" id="scrim"></div>
+<div class="mobile-nav" id="mobileNav"><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact</a><a href="admin/login.html">Staff Login</a></div>
+
+<section class="page-header">
+  <div class="wrap">
+    <div class="eyebrow">GALLERY</div>
+    <h1>A look at our work and our team</h1>
+    <p>Photos and videos from site visits, deliveries, and day-to-day operations across our lines of business.</p>
+  </div>
+</section>
+
+<section class="about">
+  <div class="wrap">
+    <div id="galleryWall" class="gallery-wall">
+      <p style="color:var(--ink-soft);">Loading gallery&hellip;</p>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <div id="lightboxContent"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand"><a href="index.html" class="brand"><span class="brand-badge"><img src="assets/logo.png" alt="Marafa Multi-Services logo"></span><span class="brand-text"><span class="name">MARAFA MULTI-SERVICES</span><span class="sub" style="color:var(--brass-light);">LIMITED &middot; RC 9797637</span></span></a><p class="footer-desc">Trade, contracting, construction, logistics, agriculture and consultancy &mdash; one accountable partner based in Kaduna State, Nigeria.</p></div>
+      <div class="footer-col"><h5>QUICK LINKS</h5><a href="about.html">About the Company</a><a href="services.html">Our Services</a><a href="projects.html">Projects</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact Us</a><a href="admin/login.html">Staff Login</a></div>
+      <div class="footer-col"><h5>REGISTERED OFFICE</h5><a href="#" style="pointer-events:none;">14, Kakaki Road, Unguwar Rimi,<br>off Bamako Road, Kaduna,<br>Kaduna State, Nigeria</a><a href="mailto:marafa123419@gmail.com">marafa123419@gmail.com</a></div>
+    </div>
+    <div class="footer-bottom"><span>&copy; 2026 MARAFA MULTI-SERVICES LIMITED. ALL RIGHTS RESERVED.</span><span>RC 9797637 &middot; INCORPORATED UNDER CAMA 2020</span></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const sbPublic = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function esc(s){return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+  (async function loadGallery(){
+    const wall = document.getElementById("galleryWall");
+    try {
+      const { data, error } = await sbPublic.from("gallery_items").select("*").order("sort_order").order("id", { ascending: false });
+      if (error) throw error;
+      if (!data || !data.length) {
+        wall.innerHTML = '<p style="color:var(--ink-soft);">No photos or videos have been added yet — check back soon.</p>';
+        return;
+      }
+      wall.innerHTML = data.map((item, i) => `
+        <div class="gallery-item" data-index="${i}">
+          <div class="media">
+            ${item.media_type === "video"
+              ? `<video src="${esc(item.url)}" muted playsinline></video>`
+              : `<img src="${esc(item.url)}" alt="${esc(item.caption || "")}" loading="lazy">`}
+          </div>
+          ${item.caption ? `<div class="cap">${esc(item.caption)}</div>` : ""}
+        </div>
+      `).join("");
+
+      const lightbox = document.getElementById("lightbox");
+      const lightboxContent = document.getElementById("lightboxContent");
+      wall.querySelectorAll(".gallery-item").forEach((el, i) => {
+        el.addEventListener("click", () => {
+          const item = data[i];
+          lightboxContent.innerHTML = item.media_type === "video"
+            ? `<video src="${esc(item.url)}" controls autoplay></video>`
+            : `<img src="${esc(item.url)}" alt="${esc(item.caption || "")}">`;
+          lightbox.classList.add("open");
+        });
+      });
+      document.getElementById("lightboxClose").addEventListener("click", () => { lightbox.classList.remove("open"); lightboxContent.innerHTML = ""; });
+      lightbox.addEventListener("click", (e) => { if (e.target === lightbox) { lightbox.classList.remove("open"); lightboxContent.innerHTML = ""; } });
+    } catch (e) {
+      wall.innerHTML = '<p style="color:var(--ink-soft);">Gallery could not be loaded right now. Please try again later.</p>';
+      console.error(e);
+    }
+  })();
+</script>
+</body>
+</html>

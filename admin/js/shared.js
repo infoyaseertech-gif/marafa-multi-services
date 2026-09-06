@@ -190,6 +190,62 @@ async function setProfileActive(id, isActive) {
   return !error;
 }
 
+async function getGalleryItems() {
+  const { data, error } = await sb.from("gallery_items").select("*").order("sort_order").order("id", { ascending: false });
+  if (error) { console.error(error); return []; }
+  return data;
+}
+async function addGalleryItem(obj) {
+  const { error } = await sb.from("gallery_items").insert(obj);
+  if (error) alert("Could not save gallery item: " + error.message);
+  return !error;
+}
+async function deleteGalleryItem(id) {
+  const { error } = await sb.from("gallery_items").delete().eq("id", id);
+  if (error) alert("Could not remove gallery item: " + error.message);
+  return !error;
+}
+
+async function getShowcaseProjects() {
+  const { data, error } = await sb.from("showcase_projects").select("*").order("sort_order").order("id", { ascending: false });
+  if (error) { console.error(error); return []; }
+  return data;
+}
+async function addShowcaseProject(obj) {
+  const { error } = await sb.from("showcase_projects").insert(obj);
+  if (error) alert("Could not save project: " + error.message);
+  return !error;
+}
+async function updateShowcaseProject(id, patch) {
+  const { error } = await sb.from("showcase_projects").update(patch).eq("id", id);
+  if (error) alert("Could not update project: " + error.message);
+  return !error;
+}
+async function deleteShowcaseProject(id) {
+  const { error } = await sb.from("showcase_projects").delete().eq("id", id);
+  if (error) alert("Could not delete project: " + error.message);
+  return !error;
+}
+
+/* ---------------------- media upload (Supabase Storage) ---------------------- */
+async function uploadMedia(file, folder) {
+  const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+  const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+  const { error } = await sb.storage.from("media").upload(path, file);
+  if (error) { alert("Upload failed: " + error.message); return null; }
+  const { data } = sb.storage.from("media").getPublicUrl(path);
+  return data.publicUrl;
+}
+async function deleteMediaByUrl(url) {
+  try {
+    const marker = "/object/public/media/";
+    const idx = url.indexOf(marker);
+    if (idx === -1) return;
+    const path = decodeURIComponent(url.slice(idx + marker.length));
+    await sb.storage.from("media").remove([path]);
+  } catch (e) { console.error("Could not remove stored file:", e); }
+}
+
 /* ---------------------- sidebar shell ---------------------- */
 const NAV_ITEMS = [
   { id: "dashboard", href: "dashboard.html", label: "Dashboard", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg>' },
@@ -197,6 +253,8 @@ const NAV_ITEMS = [
   { id: "projects", href: "projects.html", label: "Projects & Services", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="1.5"/><path d="M8 7V5.5C8 4.7 8.7 4 9.5 4H14.5C15.3 4 16 4.7 16 5.5V7"/></svg>' },
   { id: "sales", href: "sales.html", label: "Sales & Receipts", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12C3 12 6 6 12 6C18 6 21 12 21 12C21 12 18 18 12 18C6 18 3 12 3 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>' },
   { id: "expenses", href: "expenses.html", label: "Expenses", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 8H16M8 12H16M8 16H12"/></svg>' },
+  { id: "showcase", href: "showcase.html", label: "Project Showcase", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="1.5"/><path d="M3 15L8.5 10L13 13.5L21 7"/><circle cx="7.5" cy="8.5" r="1.2"/></svg>' },
+  { id: "gallery", href: "gallery.html", label: "Gallery", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.2"/><rect x="13" y="3" width="8" height="8" rx="1.2"/><rect x="3" y="13" width="8" height="8" rx="1.2"/><rect x="13" y="13" width="8" height="8" rx="1.2"/></svg>' },
   { id: "reports", href: "reports.html", label: "Reports", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20V14"/></svg>' },
   { id: "access", href: "access.html", label: "Manage Access", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>' },
   { id: "settings", href: "settings.html", label: "Settings", icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>' },
