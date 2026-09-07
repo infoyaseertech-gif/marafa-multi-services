@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects &mdash; Marafa Multi-Services Limited</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Marafa Multi-Services Limited">
+<meta property="og:title" content="Projects — Marafa Multi-Services Limited">
+<meta property="og:description" content="A look at ongoing and completed projects delivered by Marafa Multi-Services Limited across Northern Nigeria.">
+<meta property="og:image" content="https://YOUR-DOMAIN-HERE.com/assets/og-image.png">
+<meta property="og:url" content="https://YOUR-DOMAIN-HERE.com/projects.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Projects — Marafa Multi-Services Limited">
+<meta name="twitter:description" content="A look at ongoing and completed projects delivered by Marafa Multi-Services Limited across Northern Nigeria.">
+<meta name="twitter:image" content="https://YOUR-DOMAIN-HERE.com/assets/og-image.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;}
+  .proj-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff;cursor:pointer;transition:box-shadow .2s ease;}
+  .proj-card:hover{box-shadow:0 6px 20px rgba(15,42,74,0.08);}
+  .proj-card .cover{width:100%;aspect-ratio:16/10;background:#eef1f0;overflow:hidden;}
+  .proj-card .cover img{width:100%;height:100%;object-fit:cover;display:block;}
+  .proj-card .body{padding:18px 20px;}
+  .proj-card h3{font-size:17px;color:var(--indigo-900);margin:0 0 8px;}
+  .proj-card p{font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;}
+  .status-pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;padding:4px 12px;border-radius:99px;}
+  .status-pill.ongoing{background:#fdf3e2;color:#b45309;}
+  .status-pill.completed{background:#e7f4ea;color:#1f6d33;}
+  .lightbox{display:none;position:fixed;inset:0;background:rgba(10,15,20,.94);z-index:200;align-items:center;justify-content:center;padding:24px;flex-direction:column;}
+  .lightbox.open{display:flex;}
+  .lightbox-main{max-width:100%;max-height:70vh;border-radius:6px;}
+  .lightbox-thumbs{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;justify-content:center;max-width:800px;}
+  .lightbox-thumbs img{width:56px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer;opacity:.6;border:2px solid transparent;}
+  .lightbox-thumbs img.active{opacity:1;border-color:var(--brass);}
+  .lightbox-close{position:absolute;top:24px;right:28px;background:none;border:none;color:#fff;font-size:32px;cursor:pointer;line-height:1;}
+  .lightbox-title{color:#fff;margin-top:18px;font-weight:600;font-size:16px;text-align:center;}
+</style>
+</head>
+<body>
+
+<header id="siteHeader" class="solid">
+  <nav class="wrap">
+    <a href="index.html" class="brand"><span class="brand-badge"><img src="assets/logo.png" alt="Marafa Multi-Services logo"></span><span class="brand-text"><span class="name">MARAFA MULTI-SERVICES</span><span class="sub">LIMITED &middot; RC 9797637</span></span></a>
+    <ul class="navlinks">
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="admin/login.html" class="nav-cta">STAFF LOGIN</a>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+<div class="scrim" id="scrim"></div>
+<div class="mobile-nav" id="mobileNav"><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact</a><a href="admin/login.html">Staff Login</a></div>
+
+<section class="page-header">
+  <div class="wrap">
+    <div class="eyebrow">OUR PROJECTS</div>
+    <h1>What we've built and what we're working on</h1>
+    <p>A look at ongoing and completed work across our lines of business.</p>
+  </div>
+</section>
+
+<section class="about">
+  <div class="wrap">
+    <div id="projGrid" class="proj-grid">
+      <p style="color:var(--ink-soft);">Loading projects&hellip;</p>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <img class="lightbox-main" id="lightboxMain" src="" alt="">
+  <div class="lightbox-title" id="lightboxTitle"></div>
+  <div class="lightbox-thumbs" id="lightboxThumbs"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand"><a href="index.html" class="brand"><span class="brand-badge"><img src="assets/logo.png" alt="Marafa Multi-Services logo"></span><span class="brand-text"><span class="name">MARAFA MULTI-SERVICES</span><span class="sub" style="color:var(--brass-light);">LIMITED &middot; RC 9797637</span></span></a><p class="footer-desc">Trade, contracting, construction, logistics, agriculture and consultancy &mdash; one accountable partner based in Kaduna State, Nigeria.</p></div>
+      <div class="footer-col"><h5>QUICK LINKS</h5><a href="about.html">About the Company</a><a href="services.html">Our Services</a><a href="projects.html">Projects</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact Us</a><a href="admin/login.html">Staff Login</a></div>
+      <div class="footer-col"><h5>REGISTERED OFFICE</h5><a href="#" style="pointer-events:none;">14, Kakaki Road, Unguwar Rimi,<br>off Bamako Road, Kaduna,<br>Kaduna State, Nigeria</a><a href="mailto:marafa123419@gmail.com">marafa123419@gmail.com</a></div>
+    </div>
+    <div class="footer-bottom"><span>&copy; 2026 MARAFA MULTI-SERVICES LIMITED. ALL RIGHTS RESERVED.</span><span>RC 9797637 &middot; INCORPORATED UNDER CAMA 2020</span></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const sbPublic = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  function esc(s){return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+  (async function loadProjects(){
+    const grid = document.getElementById("projGrid");
+    try {
+      const { data, error } = await sbPublic.from("showcase_projects").select("*").order("sort_order").order("id", { ascending: false });
+      if (error) throw error;
+      if (!data || !data.length) {
+        grid.innerHTML = '<p style="color:var(--ink-soft);">No projects have been published yet — check back soon.</p>';
+        return;
+      }
+      grid.innerHTML = data.map((p, i) => `
+        <div class="proj-card" data-index="${i}">
+          <div class="cover">${p.cover_image ? `<img src="${esc(p.cover_image)}" alt="${esc(p.title)}" loading="lazy">` : ""}</div>
+          <div class="body">
+            <h3>${esc(p.title)}</h3>
+            <p>${esc((p.description || "").slice(0, 110))}${(p.description || "").length > 110 ? "…" : ""}</p>
+            <span class="status-pill ${p.status === "Completed" ? "completed" : "ongoing"}">${esc(p.status).toUpperCase()}</span>
+          </div>
+        </div>
+      `).join("");
+
+      const lightbox = document.getElementById("lightbox");
+      const lbMain = document.getElementById("lightboxMain");
+      const lbTitle = document.getElementById("lightboxTitle");
+      const lbThumbs = document.getElementById("lightboxThumbs");
+
+      grid.querySelectorAll(".proj-card").forEach((el, i) => {
+        el.addEventListener("click", () => {
+          const p = data[i];
+          const allImages = [p.cover_image, ...(p.images || [])].filter(Boolean);
+          if (!allImages.length) return;
+          function show(idx) {
+            lbMain.src = allImages[idx];
+            lbTitle.textContent = p.title;
+            lbThumbs.innerHTML = allImages.map((url, j) => `<img src="${esc(url)}" class="${j === idx ? "active" : ""}" data-idx="${j}">`).join("");
+            lbThumbs.querySelectorAll("img").forEach((t) => t.addEventListener("click", () => show(Number(t.dataset.idx))));
+          }
+          show(0);
+          lightbox.classList.add("open");
+        });
+      });
+      document.getElementById("lightboxClose").addEventListener("click", () => lightbox.classList.remove("open"));
+      lightbox.addEventListener("click", (e) => { if (e.target === lightbox) lightbox.classList.remove("open"); });
+    } catch (e) {
+      grid.innerHTML = '<p style="color:var(--ink-soft);">Projects could not be loaded right now. Please try again later.</p>';
+      console.error(e);
+    }
+  })();
+</script>
+</body>
+</html>

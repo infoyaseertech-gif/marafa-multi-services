@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Login &mdash; Marafa Multi-Services Limited</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="stylesheet" href="css/admin.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-badge"><img src="../assets/logo.png" alt="Marafa Multi-Services logo"></div>
+      <div class="co-name">MARAFA MULTI-SERVICES LIMITED</div>
+      <div class="co-sub">OPERATIONS PORTAL</div>
+    </div>
+    <div class="login-box">
+      <form id="loginForm">
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="you@marafamultiservices.com" autofocus>
+        </div>
+        <div class="form-field">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="••••••••">
+        </div>
+        <div class="login-error" id="loginError"></div>
+        <button type="submit" class="btn-brass" id="submitBtn">Sign In</button>
+        <p style="text-align:center;margin-top:16px;"><a href="#" id="forgotLink" style="color:#5b6570;font-size:13px;">Forgot your password?</a></p>
+      </form>
+      <form id="resetForm" style="display:none;">
+        <p style="font-size:13px;color:#5b6570;margin-top:0;">Enter your email and we'll send you a link to reset your password.</p>
+        <div class="form-field">
+          <label for="resetEmail">Email</label>
+          <input id="resetEmail" type="email" placeholder="you@marafamultiservices.com">
+        </div>
+        <div class="login-error" id="resetError"></div>
+        <div class="login-note" id="resetSuccess" style="display:none;color:#1f6d33;"><span>&#9993;</span><span>Check your inbox for a password reset link.</span></div>
+        <button type="submit" class="btn-brass" id="resetBtn">Send Reset Link</button>
+        <p style="text-align:center;margin-top:16px;"><a href="#" id="backToLoginLink" style="color:#5b6570;font-size:13px;">&larr; Back to Sign In</a></p>
+      </form>
+    </div>
+    <p style="text-align:center;margin-top:18px;"><a href="../index.html" style="color:#c9d4e8;font-size:13px;">&larr; Back to company website</a></p>
+  </div>
+</div>
+
+<script src="js/supabase-config.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>
